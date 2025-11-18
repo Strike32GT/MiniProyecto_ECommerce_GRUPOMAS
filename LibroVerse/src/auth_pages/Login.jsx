@@ -14,8 +14,9 @@ export default function Login(){
     const handleLogin = async () =>{
         try{
             const user = await loginUsuario(email,password);
-            console.log("Usuari.logueado:",user);
+            localStorage.setItem("usuario",JSON.stringify(user));
             navigate("/home");
+            console.log("Usuari.logueado:",user);
         } catch(err){
             setError(err.error || "Error al iniciar sesion");
         }

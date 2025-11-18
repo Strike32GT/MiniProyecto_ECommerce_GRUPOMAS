@@ -6,6 +6,7 @@ import Index from './pages/Index'
 import Login from './auth_pages/Login'
 import Create_Account from './auth_pages/Create_Account'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute'
 
 
 function App() {
@@ -13,9 +14,9 @@ function App() {
   return (
     <Router>
           <Routes>
-                <Route path='/' element={<Login/>} />
-                <Route path='/create' element={<Create_Account/>} />
-                <Route path='/home' element={<Index/>} />
+                <Route path='/' element={  <Login/> } />
+                <Route path='/create' element={  <Create_Account/> } />
+                <Route path='/home' element={<ProtectedRoute> <Index/> </ProtectedRoute>} />
           </Routes>
     </Router>
   )
