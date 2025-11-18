@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown, Search, ShoppingCart, Star, User } from "lucide-react";
 import Nav from "./../components/Nav";
 import { getLibros } from "../api/librosApi";
-
+import DetalleLibro from "../components/DetalleLibro";
 
 export default function Index() {
 
@@ -13,6 +13,9 @@ export default function Index() {
     const [loading, setLoading] = useState(true);
     const [showMenu, setShowMenu] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState("Orden Predeterminado");
+
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
 
     useEffect(() =>{
@@ -141,7 +144,12 @@ export default function Index() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                     {filtered.map((item) => (
-                        <div key={item.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:scale-[1.02] transition">
+                        <div key={item.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:scale-[1.02] transition"
+                            onClick={() => {
+                                setSelectedBook(item);
+                                setShowModal(true);
+                            }}
+                            >
                             {item.imagen ? (
                                 <img src={item.imagen} alt={item.nombre} className="w-full h-64 object-cover" />
                             ): (
@@ -185,6 +193,13 @@ export default function Index() {
                     ))}
                 </div>
             </div>
+
+            
+            {showModal && (
+                    <DetalleLibro libro={selectedBook}
+                    onClose={() =>setShowModal(false)}/>
+            )}
+            
         </div>
     );
 }
