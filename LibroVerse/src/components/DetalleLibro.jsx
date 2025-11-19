@@ -1,8 +1,32 @@
 import React, { useState } from "react";
 import { Book, Calendar, Globe, Heart, Minus, Plus, Share, ShoppingCart, Star, X } from "lucide-react";
+import { useCart } from "../context/CartContext";
+
 export default function DetalleLibro({ libro, onClose }) {
 
+    const { agregarAlCarrito } = useCart();
+
     const [activeTab, setActiveTab] = useState("descripcion");
+    const [cantidad, setCantidad] = useState(1);
+
+    const aumentar = () => {
+        if(cantidad <libro.cantidad_disponible){
+            setCantidad(cantidad+1);
+        }
+    };
+
+    const disminuir =() => {
+        if( cantidad >1 ){
+            setCantidad(cantidad -1);
+        }
+    };
+
+    const handleCarrito = () => {
+        agregarAlCarrito(libro,cantidad);
+        onClose();
+    };
+
+
     if (!libro) return null;
 
 
@@ -62,13 +86,13 @@ export default function DetalleLibro({ libro, onClose }) {
                             <span className="font-medium">Cantidad: </span>
 
                             <div className="flex items-center gap-4 border rounded-full px-4 py-2">
-                                <Minus size={18} />
-                                <span>1</span>
-                                <Plus size={18} />
+                                <Minus size={18} onClick={disminuir} className="cursor-pointer" />
+                                <span>{cantidad}</span>
+                                <Plus size={18} onClick={aumentar} className="cursor-pointer" />
                             </div>
                         </div>
 
-                        <button className="mt-6 w-full bg-gradient-to-r from-orange-400 to-red-500 text-white py-3 rounded-full text-lg font-semibold flex items-center justify-center gap-2 shadow hover:opacity-95">
+                        <button onClick={handleCarrito} className="mt-6 w-full bg-gradient-to-r from-orange-400 to-red-500 text-white py-3 rounded-full text-lg font-semibold flex items-center justify-center gap-2 shadow hover:opacity-95">
                             <ShoppingCart size={20} />
                             Agregar al Carrito S/ {libro.precio_final || libro.precio}
                         </button>

@@ -7,11 +7,13 @@ import Login from './auth_pages/Login'
 import Create_Account from './auth_pages/Create_Account'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute'
+import { CartProvider } from './context/CartContext'
 
 
 function App() {
 
   return (
+    <CartProvider>
     <Router>
           <Routes>
                 <Route path='/' element={  <Login/> } />
@@ -19,6 +21,7 @@ function App() {
                 <Route path='/home' element={<ProtectedRoute> <Index/> </ProtectedRoute>} />
           </Routes>
     </Router>
+    </CartProvider>
   )
 }
 
