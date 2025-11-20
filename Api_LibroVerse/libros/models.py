@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 class Categoria(models.Model):
     nombre = models.CharField(max_length=255, unique=True)
@@ -62,21 +61,4 @@ class Libro(models.Model):
         return self.nombre    
     
 
-class Pedido(models.Model):
-    usuario = models.ForeignKey("auth.User", on_delete=models.CASCADE)
-    fecha = models.DateTimeField(auto_now_add=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.CharField(max_length=20,default="pendiente")    
-
-    def __str__(self):
-        return f"Pedido {self.id} - {self.usuario.nombre_completo}"
-
-
-class PedidoItem(models.Model):
-    pedido = models.ForeignKey(Pedido, related_name="items", on_delete=models.CASCADE)
-    libro = models.ForeignKey("Libro",on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f"{(self.cantidad) * (self.precio_unitario)}"        
+   
