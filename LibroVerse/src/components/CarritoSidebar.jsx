@@ -1,9 +1,38 @@
 import React from "react";
-import { X } from "lucide-react";
+import { X, Trash } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { crearPedido } from "../api/pedidosApi";
 
 export default function CarritoSidebar({ abierto, onClose }) {
-    const { carrito } = useCart();
+    const { carrito, setCarrito } = useCart();
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    const handleConfirmarCompra = async () => {
+        if (!usuario) {
+            alert("Debes iniciar sesion");
+            return;
+        }
+
+        const itemsFormartoBackend = carrito.map(item => ({
+            libro_id: item.id,
+            cantidad: item.cantidad,
+        }));
+
+        try {
+            const data = await crearPedido(itemsFormartoBackend, usuario.id);
+            alert(`Compra realizada con exito. Total: S/ ${data.total}`);
+
+            setCarrito([]);
+            onClose();
+        } catch (error) {
+            alert("Error al procesar la compra " + JSON.stringify(error));
+        }
+    };
+
+    const handleEliminarItem = (id) => {
+        const nuevoCarrito = carrito.filter(item => item.id !== id);
+        setCarrito(nuevoCarrito);
+    };
 
     return (
         <>
@@ -30,25 +59,36 @@ export default function CarritoSidebar({ abierto, onClose }) {
                 {carrito.length === 0 ? (
                     <p className="text-gray-500">Tu carrito esta vacío</p>
                 ) : (
-                    <ul className="space-y-4">
-                        {carrito.map((item) => (
-                            <li
-                                key={item.id}
-                                className="flex justify-between items-center border-b pb-2"
-                            >
-                                <div>
-                                    <p className="font-semibold">{item.nombre}</p>
-                                    <p className="text-sm text-gray-500">
-                                        Cantidad: {item.cantidad}
-                                    </p>
-                                </div>
+                    <>
+                        <ul className="space-y-4">
+                            {carrito.map((item) => (
+                                <li
+                                    key={item.id}
+                                    className="flex justify-between items-center border-b pb-2"
+                                >
+                                    <div>
+                                        <p className="font-semibold">{item.nombre}</p>
+                                        <p className="text-sm text-gray-500">
+                                            Cantidad: {item.cantidad}
+                                        </p>
+                                        <span className="font-bold">
+                                        S/ {item.precio * item.cantidad}
+                                    </span>
+                                    </div>
 
-                                <span className="font-bold">
-                                    S/ {item.precio * item.cantidad}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
+                                    <button onClick={() => handleEliminarItem(item.id)} className="p-2 hover:bg-red-100 rounded-full">
+                                        <Trash size={20} className="text-red-600"/>
+                                    </button>
+
+                                    
+                                </li>
+                            ))}
+                        </ul>
+
+                        <button className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" onClick={handleConfirmarCompra}>
+                            Confirmar Compra
+                        </button>
+                    </>
                 )}
             </div>
         </>

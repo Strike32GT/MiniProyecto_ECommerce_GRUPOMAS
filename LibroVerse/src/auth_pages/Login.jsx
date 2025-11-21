@@ -13,7 +13,13 @@ export default function Login(){
     
     const handleLogin = async () =>{
         try{
-            const user = await loginUsuario(email,password);
+            const data = await loginUsuario(email,password);
+            localStorage.setItem("token",data.access);
+            const user = {
+                id: data.id,
+                email: data.email,
+                nombre_completo: data.nombre_completo,
+            };
             localStorage.setItem("usuario",JSON.stringify(user));
             navigate("/home");
             console.log("Usuari.logueado:",user);

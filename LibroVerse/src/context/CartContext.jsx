@@ -4,6 +4,7 @@ const CartContext = createContext();
 
 export function CartProvider({ children }){
     const [carrito, setCarrito] = useState([]);
+    const vaciarCarrito = () => setCarrito([]);
 
     const agregarAlCarrito = (libro, cantidad) => {
 
@@ -21,7 +22,7 @@ export function CartProvider({ children }){
     const totalItems = carrito.reduce((acc,item) => acc + item.cantidad, 0);
 
     return(
-        <CartContext.Provider value={{carrito,agregarAlCarrito,totalItems}}>{children}</CartContext.Provider>
+        <CartContext.Provider value={{carrito,agregarAlCarrito,totalItems, setCarrito}}>{children}</CartContext.Provider>
     );
 }
 

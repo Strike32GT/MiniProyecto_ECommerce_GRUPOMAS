@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Pedido, PedidoItem
 from libros.models import Libro
+from cuentas.models import Usuario
 
 class PedidoItemSerializer(serializers.Serializer):
     libro_id= serializers.IntegerField()
@@ -21,10 +22,16 @@ class PedidoItemSerializer(serializers.Serializer):
 
 class PedidosSerializer(serializers.ModelSerializer):
     items = PedidoItemSerializer(many=True)
+    usuario_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Pedido
+        fields = ["id", "usuario", "usuario_id", "fecha", "total", "items"]
+        read_only_fields = ["usuario", "fecha", "total"]
 
     def create(self, validated_data):
-        request = self.context['request']
-        usuario = request.user
+        usuario_id = validated_data.pop("usuario_id")
+        usuario = Usuario.objects.get(pk=usuario_id)
 
         item_data = validated_data.pop('items')
 
