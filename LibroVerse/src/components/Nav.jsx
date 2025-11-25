@@ -3,7 +3,7 @@ import { User, ShoppingCart } from "lucide-react"
 import { useCart} from "../context/CartContext";
 import CarritoSidebar from "./CarritoSidebar";
 
-export default function Nav() {
+export default function Nav( {onChangeTipo} ) {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
     const {totalItems} = useCart();
     const [abrirCarrito, setAbrirCarrito] = useState(false);
@@ -13,9 +13,9 @@ export default function Nav() {
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">LibroVerse</h1>
 
             <div className="hidden md:flex items-center gap-6 text-white font-medium">
-                <button className="hover:text-gray-300 cursor-pointer">Libros</button>
-                <button className="hover:text-gray-300 cursor-pointer">Mangas</button>
-                <button className="hover:text-gray-300 cursor-pointer">Comics</button>
+                <button className="hover:text-gray-300 cursor-pointer" onClick={() => onChangeTipo(null)}>Libros</button>
+                <button className="hover:text-gray-300 cursor-pointer" onClick={() => onChangeTipo(3)}>Mangas</button>
+                <button className="hover:text-gray-300 cursor-pointer" onClick={() => onChangeTipo(2)}>Comics</button>
             </div>
 
             <div className="flex gap-5 text-white">

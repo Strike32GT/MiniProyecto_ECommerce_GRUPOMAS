@@ -12,3 +12,14 @@ class LibroViewSet(viewsets.ModelViewSet):
     search_fields = ['nombre', 'autor', 'categoria__nombre','tipo__nombre']
     ordering_fields = ['nombre','categoria','year_publicacion', 'precio_final', 'paginas']
     ordering = ['nombre']
+
+    def get_queryset(self):
+        queryset = Libro.objects.all()
+        tipo = self.request.query_params.get("tipo")
+
+        if tipo:
+            queryset = queryset.filter(tipo_id = tipo)
+
+        return queryset     
+
+        

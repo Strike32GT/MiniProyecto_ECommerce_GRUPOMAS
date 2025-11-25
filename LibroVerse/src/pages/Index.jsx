@@ -17,19 +17,20 @@ export default function Index() {
     const [selectedBook, setSelectedBook] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
+    const [tipoSeleccionado, setTipoSeleccionado] = useState(null);
 
     useEffect(() =>{
         (async ()=> {
-            await cargarLibros();
+            await cargarLibros(null,tipoSeleccionado);
         })();
-    }, []);
+    }, [tipoSeleccionado]);
 
 
-    const cargarLibros = async (orden = null) => {
+    const cargarLibros = async (orden = null, tipo = null) => {
         setLoading(true);
 
     try {
-      const data = await getLibros(orden); 
+      const data = await getLibros(orden, tipo); 
       setProductos(data);
       setFiltered(data);
     } catch (error) {
@@ -42,7 +43,7 @@ export default function Index() {
     const handleOrder = async (label, orden) => {
     setSelectedOrder(label);
     setShowMenu(false);
-    await cargarLibros(orden); 
+    await cargarLibros(orden, tipoSeleccionado); 
   };
 
   const handleSearch = (value) => {
@@ -67,7 +68,7 @@ export default function Index() {
     return (
         <div className="min-h-screen bg-[#FFF8E8]">
 
-            <Nav/>
+            <Nav onChangeTipo={setTipoSeleccionado}/>
 
             <div className="max-w-3xl mx-auto mt-8 px-4">
                 <div className="flex items-center bg-white shadow-md rounded-full px-4 py-3">
