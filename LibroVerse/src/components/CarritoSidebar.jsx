@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { X, Trash } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { crearPedido } from "../api/pedidosApi";
+import PasarelaPago from "./PasarelaPago";
 
 export default function CarritoSidebar({ abierto, onClose }) {
     const { carrito, setCarrito } = useCart();
     const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    const [mostrarPasarela, setMostrarPasarela] = useState(false);
+
 
     const handleConfirmarCompra = async () => {
         if (!usuario) {
@@ -27,6 +30,21 @@ export default function CarritoSidebar({ abierto, onClose }) {
         } catch (error) {
             alert("Error al procesar la compra " + JSON.stringify(error));
         }
+    };
+
+    const handleAbrirPasarela = () => {
+
+        if (!usuario) {
+            alert("Debes iniciar sesion");
+            return;
+        }
+
+        if (carrito.length === 0) {
+            alert("Tu carrito esta vacio");
+            return;
+        }
+
+        setMostrarPasarela(true);
     };
 
     const handleEliminarItem = (id) => {
@@ -72,25 +90,36 @@ export default function CarritoSidebar({ abierto, onClose }) {
                                             Cantidad: {item.cantidad}
                                         </p>
                                         <span className="font-bold">
-                                        S/ {item.precio * item.cantidad}
-                                    </span>
+                                            S/ {item.precio * item.cantidad}
+                                        </span>
                                     </div>
 
                                     <button onClick={() => handleEliminarItem(item.id)} className="p-2 hover:bg-red-100 rounded-full">
-                                        <Trash size={20} className="text-red-600"/>
+                                        <Trash size={20} className="text-red-600" />
                                     </button>
 
-                                    
+
                                 </li>
                             ))}
                         </ul>
 
-                        <button className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" onClick={handleConfirmarCompra}>
+                        <button className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" onClick={handleAbrirPasarela}>
                             Confirmar Compra
                         </button>
                     </>
                 )}
             </div>
+
+            {mostrarPasarela && (
+                <PasarelaPago
+                    abierto={mostrarPasarela}
+                    onClose={() => {
+                        setMostrarPasarela(false);
+                        onClose(); 
+                    }}
+                    usuario={usuario}
+                />
+            )}
         </>
     );
 }
