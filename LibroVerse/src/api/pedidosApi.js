@@ -11,10 +11,34 @@ export const crearPedidoPendiente = async (items, usuarioId) => {
     return response.data;   
 };
 
-// Confirmar pago de un pedido pendiente
-export const confirmarPagoPedido = async (pedidoId, metodoPago) => {
-    const response = await axios.post(`${API_BASE}${pedidoId}/confirmar-pago/`, {
-        metodo_pago: metodoPago,   
-    });
-    return response.data;   
+export const enviarCodigoPago = async (pedidoId, correo) => {
+    const response = await axios.post(
+        `${API_BASE}${pedidoId}/enviar-codigo/`,
+        { correo }
+    );
+    return response.data;
+};
+
+
+export const confirmarPagoPedido = async (pedidoId, metodoPago, codigo) => {
+    const body = { metodo_pago: metodoPago };
+    if (codigo) body.codigo = codigo;
+
+    const response = await axios.post(
+        `${API_BASE}${pedidoId}/confirmar-pago/`,
+        body
+    );
+    return response.data;
+};
+
+export const obtenerPedidosUsuario = async (usuarioId) => {
+    const response = await axios.get(
+        `${API_BASE}?usuario_id=${usuarioId}`
+    );
+    return response.data;
+};
+
+export const obtenerDetallePedido = async (pedidoId) => {
+    const response = await axios.get(`${API_BASE}${pedidoId}/`);
+    return response.data; 
 };

@@ -9,31 +9,7 @@ export default function CarritoSidebar({ abierto, onClose }) {
 
     const [mostrarPasarela, setMostrarPasarela] = useState(false);
 
-
-    const handleConfirmarCompra = async () => {
-        if (!usuario) {
-            alert("Debes iniciar sesion");
-            return;
-        }
-
-        const itemsFormartoBackend = carrito.map(item => ({
-            libro_id: item.id,
-            cantidad: item.cantidad,
-        }));
-
-        try {
-            const data = await crearPedido(itemsFormartoBackend, usuario.id);
-            alert(`Compra realizada con exito. Total: S/ ${data.total}`);
-
-            setCarrito([]);
-            onClose();
-        } catch (error) {
-            alert("Error al procesar la compra " + JSON.stringify(error));
-        }
-    };
-
     const handleAbrirPasarela = () => {
-
         if (!usuario) {
             alert("Debes iniciar sesion");
             return;
@@ -48,7 +24,7 @@ export default function CarritoSidebar({ abierto, onClose }) {
     };
 
     const handleEliminarItem = (id) => {
-        const nuevoCarrito = carrito.filter(item => item.id !== id);
+        const nuevoCarrito = carrito.filter((item) => item.id !== id);
         setCarrito(nuevoCarrito);
     };
 
@@ -79,31 +55,42 @@ export default function CarritoSidebar({ abierto, onClose }) {
                 ) : (
                     <>
                         <ul className="space-y-4">
-                            {carrito.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className="flex justify-between items-center border-b pb-2"
-                                >
-                                    <div>
-                                        <p className="font-semibold">{item.nombre}</p>
-                                        <p className="text-sm text-gray-500">
-                                            Cantidad: {item.cantidad}
-                                        </p>
-                                        <span className="font-bold">
-                                            S/ {item.precio * item.cantidad}
-                                        </span>
-                                    </div>
+                            {carrito.map((item) => {
+                                const precioUnitario =
+                                    item.descuento && item.descuento > 0
+                                        ? item.precio_final
+                                        : item.precio;
 
-                                    <button onClick={() => handleEliminarItem(item.id)} className="p-2 hover:bg-red-100 rounded-full">
-                                        <Trash size={20} className="text-red-600" />
-                                    </button>
+                                return (
+                                    <li
+                                        key={item.id}
+                                        className="flex justify-between items-center border-b pb-2"
+                                    >
+                                        <div>
+                                            <p className="font-semibold">{item.nombre}</p>
+                                            <p className="text-sm text-gray-500">
+                                                Cantidad: {item.cantidad}
+                                            </p>
+                                            <span className="font-bold">
+                                                S/ {(precioUnitario * item.cantidad).toFixed(2)}
+                                            </span>
+                                        </div>
 
-
-                                </li>
-                            ))}
+                                        <button
+                                            onClick={() => handleEliminarItem(item.id)}
+                                            className="p-2 hover:bg-red-100 rounded-full"
+                                        >
+                                            <Trash size={20} className="text-red-600" />
+                                        </button>
+                                    </li>
+                                );
+                            })}
                         </ul>
 
-                        <button className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" onClick={handleAbrirPasarela}>
+                        <button
+                            className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+                            onClick={handleAbrirPasarela}
+                        >
                             Confirmar Compra
                         </button>
                     </>
@@ -115,7 +102,7 @@ export default function CarritoSidebar({ abierto, onClose }) {
                     abierto={mostrarPasarela}
                     onClose={() => {
                         setMostrarPasarela(false);
-                        onClose(); 
+                        onClose();
                     }}
                     usuario={usuario}
                 />
